@@ -25,18 +25,40 @@ mvn -Dtest=com.cromerosi.homomorfismos.crypto.PaillierTest,com.cromerosi.homomor
 ```
 
 Notas:
-- Si `mvn` no está en PATH en tu entorno, usa el wrapper de tu instalación de JDK o ejecuta los tests desde tu IDE (IntelliJ/VSCode).
+- Si `mvn` no está en PATH de entorno, usa el wrapper de tu instalación de JDK o ejecuta los tests desde tu IDE (IntelliJ/VSCode).
 - Las implementaciones incluidas son educativas y usan `BigInteger` y versiones simplificadas; no están pensadas para producción criptográfica.
 
-Mensaje de commit recomendado:
+## Ejemplo de uso y scripts
 
+Se añadió una pequeña utilidad `Demo` y scripts para ejecutar ejemplos y benchmarks rápidamente.
+
+- Clase demo: `com.cromerosi.homomorfismos.tools.Demo`
+- Scripts añadidos en `scripts/`:
+	- `run_demo.sh` — compila y ejecuta la demo (POSIX)
+	- `run_demo.ps1` — compila y ejecuta la demo (PowerShell)
+	- `run_benchmarks.sh` — ejecuta los tests de benchmark (POSIX)
+	- `run_benchmarks.ps1` — ejecuta los tests de benchmark (PowerShell)
+
+Ejecutar la demo (ejemplo POSIX):
+
+```bash
+./scripts/run_demo.sh
 ```
-feat(crypto,math,benchmark): implementa y estabiliza Paillier/ElGamal; corrige MathUtils y métricas
 
-- implementa cifrado/descifrado y operaciones homomórficas en crypto
-- añade comentarios técnicos y ajustes para recuento homomórfico
-- corrige Miller-Rabin y multiplicación modular para evitar falsos negativos
-- ajusta compareEncryptionSpeed para resultados no negativos
+Ejecutar la demo (PowerShell):
+
+```powershell
+.\scripts\run_demo.ps1
 ```
 
-Si quieres, agrego una sección de ejemplo de uso y scripts para generar claves y ejecutar benchmarks.
+Ejecutar benchmarks (POSIX):
+
+```bash
+./scripts/run_benchmarks.sh
+```
+
+Ejecutar benchmarks (PowerShell):
+
+```powershell
+.\scripts\run_benchmarks.ps1
+```
