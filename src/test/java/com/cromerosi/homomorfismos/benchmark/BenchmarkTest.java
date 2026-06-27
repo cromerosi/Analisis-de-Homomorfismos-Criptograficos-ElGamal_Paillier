@@ -1,12 +1,14 @@
 package com.cromerosi.homomorfismos.benchmark;
 
-import com.cromerosi.homomorfismos.crypto.ElGamal;
-import com.cromerosi.homomorfismos.crypto.Paillier;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.cromerosi.homomorfismos.crypto.ElGamal;
+import com.cromerosi.homomorfismos.crypto.Paillier;
 
 @DisplayName("Pruebas de Rendimiento y Comparativa")
 class BenchmarkTest {
@@ -17,9 +19,16 @@ class BenchmarkTest {
 
     @BeforeEach
     void setUp() {
+        System.out.println("Creando PerformanceMetrics");
         metrics = new PerformanceMetrics();
+
+        System.out.println("Creando ElGamal");
         elGamal = new ElGamal(512);
+        System.out.println("ElGamal OK");
+
+        System.out.println("Creando Paillier");
         paillier = new Paillier(512);
+        System.out.println("Paillier OK");
     }
 
     @Test

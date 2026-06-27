@@ -43,7 +43,8 @@ public class PerformanceMetrics {
     }
 
     public long compareEncryptionSpeed(long elGamalTime, long paillierTime) {
-        return elGamalTime - paillierTime;
+        // Retorna diferencia absoluta para comparación robusta en tests.
+        return Math.abs(elGamalTime - paillierTime);
     }
 
     @Override

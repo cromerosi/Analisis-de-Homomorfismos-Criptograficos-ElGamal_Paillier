@@ -1,5 +1,6 @@
 package com.cromerosi.homomorfismos.math;
 
+import java.math.BigInteger;
 import java.util.Random;
 
 /**
@@ -34,12 +35,12 @@ public final class MathUtils {
     public static long modPow(long base, long exp, long modulus) {
         if (modulus == 1) return 0;
         long result = 1;
-        base %= modulus;
+        base = Math.floorMod(base, modulus);
         while (exp > 0) {
             if ((exp & 1) == 1) {
-                result = (result * base) % modulus;
+                result = multiplyMod(result, base, modulus);
             }
-            base = (base * base) % modulus;
+            base = multiplyMod(base, base, modulus);
             exp >>= 1;
         }
         return result;
@@ -93,7 +94,7 @@ public final class MathUtils {
         // Prueba Miller-Rabin con k=5 iteraciones
         int k = 5;
         for (int i = 0; i < k; i++) {
-            long a = 2 + RANDOM.nextLong() % (n - 3);
+            long a = 2 + Math.floorMod(RANDOM.nextLong(), n - 3);
             if (!millerRabinTest(n, a, d, r)) {
                 return false;
             }
@@ -107,11 +108,18 @@ public final class MathUtils {
             return true;
         }
         for (int i = 0; i < r - 1; i++) {
-            x = (x * x) % n;
+            x = multiplyMod(x, x, n);
             if (x == n - 1) {
                 return true;
             }
         }
         return false;
+    }
+
+    private static long multiplyMod(long left, long right, long modulus) {
+        return BigInteger.valueOf(left)
+                .multiply(BigInteger.valueOf(right))
+                .mod(BigInteger.valueOf(modulus))
+                .longValueExact();
     }
 }
