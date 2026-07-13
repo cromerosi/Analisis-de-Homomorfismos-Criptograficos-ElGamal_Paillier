@@ -6,22 +6,45 @@ import java.math.BigInteger;
 
 public class Demo {
     public static void main(String[] args) {
-        int keySize = 512;
-        System.out.println("=== Demo de Criptosistemas Homomórficos (KeySize: " + keySize + ") ===");
+        int keySize = 2048; //1024 o 2048
+        System.out.println("=== BENCHMARK DE CRIPTOSISTEMAS HOMOMÓRFICOS (KeySize: " + keySize + ") ===");
 
-        // Paillier
-        Paillier paillier = new Paillier(keySize);
         BigInteger voto = BigInteger.valueOf(1);
-        BigInteger c1 = paillier.encrypt(voto);
-        System.out.println("\n[Paillier] Voto original: " + voto);
-        System.out.println("[Paillier] Voto cifrado: " + c1.toString().substring(0, 30) + "...");
-        System.out.println("[Paillier] Voto descifrado: " + paillier.decrypt(c1));
 
-        // ElGamal
+        // ==========================================
+        // PRUEBA DE PAILLIER
+        // ==========================================
+        System.out.println("\n--- Ejecutando Paillier ---");
+        long inicioPaillier = System.nanoTime();
+        
+        Paillier paillier = new Paillier(keySize);
+        BigInteger c1 = paillier.encrypt(voto);
+        BigInteger descifradoPaillier = paillier.decrypt(c1);
+        
+        long finPaillier = System.nanoTime();
+        double tiempoPaillier = (finPaillier - inicioPaillier) / 1e6;
+
+        System.out.println("[Paillier] Voto original: " + voto);
+        System.out.println("[Paillier] Voto cifrado: " + c1.toString().substring(0, 30) + "...");
+        System.out.println("[Paillier] Voto descifrado: " + descifradoPaillier);
+        System.out.println("[Paillier] TIEMPO TOTAL: " + tiempoPaillier + " ms");
+
+        // ==========================================
+        // PRUEBA DE ELGAMAL
+        // ==========================================
+        System.out.println("\n--- Ejecutando ElGamal ---");
+        long inicioElGamal = System.nanoTime();
+        
         ElGamal elGamal = new ElGamal(keySize);
         BigInteger[] e1 = elGamal.encrypt(voto);
-        System.out.println("\n[ElGamal] Mensaje original: " + voto);
+        BigInteger descifradoElGamal = elGamal.decrypt(e1);
+        
+        long finElGamal = System.nanoTime();
+        double tiempoElGamal = (finElGamal - inicioElGamal) / 1e6;
+
+        System.out.println("[ElGamal] Mensaje original: " + voto);
         System.out.println("[ElGamal] Cifrado [c1]: " + e1[0].toString().substring(0, 30) + "...");
-        System.out.println("[ElGamal] Descifrado: " + elGamal.decrypt(e1));
+        System.out.println("[ElGamal] Descifrado: " + descifradoElGamal);
+        System.out.println("[ElGamal] TIEMPO TOTAL: " + tiempoElGamal + " ms");
     }
 }
