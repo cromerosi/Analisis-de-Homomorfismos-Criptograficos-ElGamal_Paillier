@@ -3,110 +3,49 @@ package com.cromerosi.homomorfismos.crypto;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-/**
- * Implementación del esquema de cifrado homomórfico ElGamal.
- */
 public class ElGamal {
+    private final BigInteger p;
+    private final BigInteger g;
+    private final BigInteger x; // Clave privada
+    private final BigInteger y; // Clave pública
 
-    private static final SecureRandom RANDOM = new SecureRandom();
-
-    private final ElGamalPublicKey publicKey;
-    private final ElGamalPrivateKey privateKey;
-    private final long modulus; // p: primo grande (módulo del grupo)
-
-    public ElGamal(int keySize) {
-        this.modulus = generateModulus(keySize);
-        this.publicKey = new ElGamalPublicKey(modulus);
-        this.privateKey = new ElGamalPrivateKey(modulus);
+    public ElGamal(int bitLength) {
+        SecureRandom random = new SecureRandom();
+        this.p = BigInteger.probablePrime(bitLength, random);
+        this.g = findGenerator(p);
+        this.x = new BigInteger(bitLength - 1, random).mod(p.subtract(BigInteger.ONE));
+        this.y = g.modPow(x, p);
     }
 
-    public ElGamalPublicKey getPublicKey() {
-        return publicKey;
-    }
-
-    public ElGamalPrivateKey getPrivateKey() {
-        return privateKey;
-    }
-
-    public long getModulus() {
-        return modulus;
-    }
-
-    public long[] encrypt(long plaintext) {
-        long normalizedPlaintext = Math.floorMod(plaintext, modulus);
-        long randomFactor = sampleNonZero(modulus); // k aleatorio no nulo
-        long cipherValue = multiplyMod(normalizedPlaintext, randomFactor, modulus);
-        return new long[]{cipherValue, randomFactor};
-    }
-
-    public long decrypt(long[] ciphertext) {
-        if (ciphertext == null || ciphertext.length < 2) {
-            throw new IllegalArgumentException("El criptograma debe contener dos valores");
+    private BigInteger findGenerator(BigInteger p) {
+        BigInteger pMinusOne = p.subtract(BigInteger.ONE);
+        BigInteger two = BigInteger.valueOf(2);
+        for (BigInteger gen = two; gen.compareTo(pMinusOne) < 0; gen = gen.add(BigInteger.ONE)) {
+            if (gen.modPow(pMinusOne.divide(two), p).compareTo(BigInteger.ONE) != 0) {
+                return gen;
+            }
         }
-
-        long cipherValue = Math.floorMod(ciphertext[0], modulus);
-        long randomFactor = Math.floorMod(ciphertext[1], modulus);
-        if (randomFactor == 0) {
-            throw new IllegalArgumentException("El factor aleatorio del criptograma no puede ser 0");
-        }
-        long inverse = BigInteger.valueOf(randomFactor)
-                .modInverse(BigInteger.valueOf(modulus))
-                .longValueExact();
-        return multiplyMod(cipherValue, inverse, modulus);
+        return two; // Fallback básico
     }
 
-    public long[] homomorphicAdd(long[] c1, long[] c2) {
-        if (c1 == null || c2 == null || c1.length < 2 || c2.length < 2) {
-            throw new IllegalArgumentException("Los criptogramas deben contener dos valores");
-        }
-
-        // En ElGamal multiplicativo: E(m1) * E(m2) = E(m1 * m2)
-        long combinedCipherValue = multiplyMod(c1[0], c2[0], modulus);
-        long combinedRandomFactor = multiplyMod(c1[1], c2[1], modulus);
-        return new long[]{combinedCipherValue, combinedRandomFactor};
+    public BigInteger[] encrypt(BigInteger m) {
+        SecureRandom random = new SecureRandom();
+        BigInteger k = new BigInteger(p.bitLength() - 1, random).mod(p.subtract(BigInteger.ONE));
+        if (k.equals(BigInteger.ZERO)) k = BigInteger.ONE;
+        
+        BigInteger c1 = g.modPow(k, p);
+        BigInteger c2 = m.multiply(y.modPow(k, p)).mod(p);
+        return new BigInteger[]{c1, c2};
     }
 
-    public static final class ElGamalPublicKey {
-
-        private final long modulus; // p: módulo público
-
-        private ElGamalPublicKey(long modulus) {
-            this.modulus = modulus;
-        }
-
-        public long getModulus() {
-            return modulus;
-        }
+    public BigInteger decrypt(BigInteger[] ciphertext) {
+        BigInteger c1 = ciphertext[0];
+        BigInteger c2 = ciphertext[1];
+        BigInteger s = c1.modPow(x, p);
+        return c2.multiply(s.modInverse(p)).mod(p);
     }
 
-    public static final class ElGamalPrivateKey {
-
-        private final long modulus; // en esta simplificación la clave privada depende de p
-
-        private ElGamalPrivateKey(long modulus) {
-            this.modulus = modulus;
-        }
-
-        public long getModulus() {
-            return modulus;
-        }
-    }
-
-    private static long generateModulus(int keySize) {
-        if (keySize >= 256) {
-            return 1_000_000_007L;
-        }
-        return Math.max(257L, keySize * 19L + 3L);
-    }
-
-    private static long sampleNonZero(long boundExclusive) {
-        return 1 + Math.floorMod(RANDOM.nextLong(), boundExclusive - 1);
-    }
-
-    private static long multiplyMod(long left, long right, long modulus) {
-        return BigInteger.valueOf(left)
-                .multiply(BigInteger.valueOf(right))
-                .mod(BigInteger.valueOf(modulus))
-                .longValueExact();
-    }
+    public BigInteger getP() { return p; }
+    public BigInteger getG() { return g; }
+    public BigInteger getY() { return y; }
 }
