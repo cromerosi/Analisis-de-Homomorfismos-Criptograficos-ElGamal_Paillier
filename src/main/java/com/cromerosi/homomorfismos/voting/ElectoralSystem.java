@@ -1,38 +1,39 @@
 package com.cromerosi.homomorfismos.voting;
 
 import com.cromerosi.homomorfismos.crypto.Paillier;
+import java.math.BigInteger;
+import java.util.List;
 
-/**
- * Sistema de votación electrónica con cifrado homomórfico.
- */
 public class ElectoralSystem {
-
     private final Paillier paillier;
 
     public ElectoralSystem(int keySize) {
         this.paillier = new Paillier(keySize);
     }
 
-    public long encryptVote(int vote) {
+    public BigInteger encryptVote(int vote) {
         if (vote != 0 && vote != 1) {
-            throw new IllegalArgumentException("Voto debe ser 0 o 1");
+            throw new IllegalArgumentException("El voto debe ser 0 o 1");
         }
-        return paillier.encrypt(vote);
+        return paillier.encrypt(BigInteger.valueOf(vote));
     }
 
-    public long tallyEncryptedVotes(long[] encryptedVotes) {
-        long encryptedSum = paillier.encrypt(0);
-        if (encryptedVotes == null) {
+    public BigInteger tallyEncryptedVotes(List<BigInteger> encryptedVotes) {
+        // Iniciamos la suma homomórfica cifrando un 0
+        BigInteger encryptedSum = paillier.encrypt(BigInteger.ZERO);
+        
+        if (encryptedVotes == null || encryptedVotes.isEmpty()) {
             return encryptedSum;
         }
 
-        for (long encryptedVote : encryptedVotes) {
+        // Computamos el total operando exclusivamente sobre datos cifrados
+        for (BigInteger encryptedVote : encryptedVotes) {
             encryptedSum = paillier.homomorphicAdd(encryptedSum, encryptedVote);
         }
         return encryptedSum;
     }
 
-    public long decryptResult(long encryptedSum) {
-        return paillier.decrypt(encryptedSum);
+    public int decryptResult(BigInteger encryptedSum) {
+        return paillier.decrypt(encryptedSum).intValue();
     }
 }
