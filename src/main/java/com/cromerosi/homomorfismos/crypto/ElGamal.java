@@ -4,13 +4,14 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 
 public class ElGamal {
+    private final SecureRandom random;
     private final BigInteger p;
     private final BigInteger g;
     private final BigInteger x; // Clave privada
     private final BigInteger y; // Clave pública
 
     public ElGamal(int bitLength) {
-        SecureRandom random = new SecureRandom();
+        this.random = new SecureRandom();
         // Para las pruebas que trabajan con `long` y tamaños grandes, usamos un primo pequeño conocido
         if (bitLength > 31) {
             this.p = BigInteger.valueOf(1_000_000_007L); // primo de 32 bits
@@ -37,7 +38,6 @@ public class ElGamal {
     }
 
     public BigInteger[] encrypt(BigInteger m) {
-        SecureRandom random = new SecureRandom();
         BigInteger k = new BigInteger(p.bitLength() - 1, random).mod(p.subtract(BigInteger.ONE));
         if (k.equals(BigInteger.ZERO)) k = BigInteger.ONE;
         
