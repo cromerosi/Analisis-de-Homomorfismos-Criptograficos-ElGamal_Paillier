@@ -1,64 +1,80 @@
-# Analisis-de-Homomorfismos-Criptograficos-ElGamal_Paillier
+# 📊 Análisis comparativo: ElGamal vs Paillier
 
-Proyecto en Java que compara esquemas de cifrado homomórfico (ElGamal y Paillier) aplicados a un sistema de votación electrónica. Permite cifrar votos, realizar recuentos homomórficos sin revelar votos individuales y medir métricas de rendimiento.
+![build](https://img.shields.io/badge/build-manual-blue)
+![java](https://img.shields.io/badge/java-21-blueviolet)
+![tests](https://img.shields.io/badge/tests-passing-brightgreen)
+![license](https://img.shields.io/badge/license-unspecified-lightgrey)
 
-**Estado reciente**
-- Se completaron e integraron implementaciones de `Paillier` y `ElGamal` utilizadas por las pruebas.
-- Se mejoró `MathUtils` (Miller–Rabin y multiplicación modular) para eliminar falsos negativos en primalidad.
-- Se ajustó la métrica de `PerformanceMetrics` para que la suite de tests sea estable.
+Proyecto en Java que compara dos esquemas homomórficos (ElGamal y Paillier) aplicados a un sistema de votación electrónica. El objetivo es educativo y experimental: cifrar votos, acumular recuentos homomórficos y medir rendimiento.
 
-Archivos clave modificados:
-- [src/main/java/com/cromerosi/homomorfismos/crypto/Paillier.java](src/main/java/com/cromerosi/homomorfismos/crypto/Paillier.java)
-- [src/main/java/com/cromerosi/homomorfismos/crypto/ElGamal.java](src/main/java/com/cromerosi/homomorfismos/crypto/ElGamal.java)
-- [src/main/java/com/cromerosi/homomorfismos/math/MathUtils.java](src/main/java/com/cromerosi/homomorfismos/math/MathUtils.java)
-- [src/main/java/com/cromerosi/homomorfismos/benchmark/PerformanceMetrics.java](src/main/java/com/cromerosi/homomorfismos/benchmark/PerformanceMetrics.java)
-- [src/main/java/com/cromerosi/homomorfismos/voting/ElectoralSystem.java](src/main/java/com/cromerosi/homomorfismos/voting/ElectoralSystem.java)
+## ✅ Qué contiene este repositorio
+- Implementaciones de `Paillier` y `ElGamal` (BigInteger, orientadas a estudio/ensayo).
+- Utilidades matemáticas (`MathUtils`) para operaciones con `BigInteger`.
+- Un runner de benchmarks: `com.cromerosi.homomorfismos.App` que procesa archivos de votos y produce métricas y CSVs.
 
-Cómo ejecutar la suite de tests (desde la raíz del repositorio):
+## 🎯 Resultados que genera el benchmark
+- `resultados_parciales.csv` — se va escribiendo por archivo procesado (útil para interrupciones).
+- `resultados_benchmark.csv` — resumen final por tamaño y método.
+- `informe_benchmark.txt` — resumen ejecutivo con speedups y observaciones.
 
-```bash
-# Ejecutar todos los tests
-mvn clean test
+## 🛠 Requisitos
+- JDK 17+ (el proyecto se probó con JDK 21 en este equipo).
+- Opcional: Maven (`mvn`) para compilar y ejecutar tests desde terminal.
 
-# Ejecutar tests concretos (ejemplo: Paillier + ElGamal + ElectoralSystem)
-mvn -Dtest=com.cromerosi.homomorfismos.crypto.PaillierTest,com.cromerosi.homomorfismos.crypto.ElGamalTest,com.cromerosi.homomorfismos.voting.ElectoralSystemTest test
-```
+Si no tienes `mvn` en PATH, puedes compilar con tu IDE o ejecutar la clase `App` directamente apuntando al classpath compilado.
 
-Notas:
-- Si `mvn` no está en PATH de entorno, usa el wrapper de tu instalación de JDK o ejecuta los tests desde tu IDE (IntelliJ/VSCode).
-- Las implementaciones incluidas son educativas y usan `BigInteger` y versiones simplificadas; no están pensadas para producción criptográfica.
+## ▶️ Cómo ejecutar (rápido)
 
-## Ejemplo de uso y scripts
-
-Se añadió una pequeña utilidad `Demo` y scripts para ejecutar ejemplos y benchmarks rápidamente.
-
-- Clase demo: `com.cromerosi.homomorfismos.tools.Demo`
-- Scripts añadidos en `scripts/`:
-	- `run_demo.sh` — compila y ejecuta la demo (POSIX)
-	- `run_demo.ps1` — compila y ejecuta la demo (PowerShell)
-	- `run_benchmarks.sh` — ejecuta los tests de benchmark (POSIX)
-	- `run_benchmarks.ps1` — ejecuta los tests de benchmark (PowerShell)
-
-Ejecutar la demo (ejemplo POSIX):
+Compilar con Maven (si lo tienes):
 
 ```bash
-./scripts/run_demo.sh
+mvn -DskipTests package
 ```
 
-Ejecutar la demo (PowerShell):
-
-```powershell
-.\scripts\run_demo.ps1
-```
-
-Ejecutar benchmarks (POSIX):
+Ejecutar `App` (ejemplo):
 
 ```bash
-./scripts/run_benchmarks.sh
+java -cp target/classes com.cromerosi.homomorfismos.App
 ```
 
-Ejecutar benchmarks (PowerShell):
+Ejecutar los tests con Maven:
 
-```powershell
-.\scripts\run_benchmarks.ps1
+```bash
+mvn test
+```
+
+Si tu entorno no tiene `mvn`, usa tu IDE para ejecutar las pruebas o compilar.
+
+## 🧪 Formato esperado de los archivos de votos
+- Carpeta por tamaño recomendada: `benchmarks_data/<size>/` con archivos `.txt`.
+- Cada línea debe contener `0`, `1` o `2` (opciones de voto). Ejemplo:
+
+```
+0
+1
+2
+1
+```
+
+
+## 📂 Estructura principal
+Árbol simplificado (raíz del repositorio):
+
+```text
+.
+├── .vscode/
+├── benchmarks_data/       # datos de entrada para el benchmark (no incluidos)
+├── docs/
+├── scripts/               # utilidades para demo/benchmarks
+├── src/
+│   ├── main/
+│   │   └── java/com/cromerosi/homomorfismos/
+│   │       ├── benchmark/
+│   │       ├── crypto/
+│   │       ├── math/
+│   │       ├── tools/
+│   │       └── voting/
+│   └── test/
+└── README.md
+
 ```
