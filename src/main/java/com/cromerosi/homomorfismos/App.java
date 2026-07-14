@@ -404,11 +404,11 @@ public final class App {
         }
     }
 
-    private static List<Path> collectFilesForSize(String sizeToken) {
+    private static List<Path> collectFilesForSize(int sizeToken) {
         List<Path> found = new ArrayList<>();
         try {
             // Prefer folder benchmarks_data/<sizeToken>/
-            Path dir = DATA_ROOT.resolve(sizeToken);
+            Path dir = DATA_ROOT.resolve(String.valueOf(sizeToken));
             if (Files.isDirectory(dir)) {
                 Files.list(dir).filter(p -> p.getFileName().toString().endsWith(".txt")).forEach(found::add);
             } else if (Files.isDirectory(DATA_ROOT)) {
