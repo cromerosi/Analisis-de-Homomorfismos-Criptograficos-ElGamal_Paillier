@@ -1,9 +1,9 @@
 # 📊 Análisis comparativo: ElGamal vs Paillier
 
-![build](https://img.shields.io/badge/build-manual-blue)
-![java](https://img.shields.io/badge/java-21-blueviolet)
-![tests](https://img.shields.io/badge/tests-passing-brightgreen)
-![license](https://img.shields.io/badge/license-unspecified-lightgrey)
+![build](https://img.shields.io/badge/BUILD-MANUAL-blue)
+![java](https://img.shields.io/badge/Java-21-blueviolet)
+![tests](https://img.shields.io/badge/TEST-PASSING-brightgreen)
+![license](https://img.shields.io/badge/MATEMATICAS-DISCRETAS-lightgrey)
 
 Proyecto en Java que compara dos esquemas homomórficos (ElGamal y Paillier) aplicados a un sistema de votación electrónica. El objetivo es educativo y experimental: cifrar votos, acumular recuentos homomórficos y medir rendimiento.
 
