@@ -1,0 +1,6 @@
+Informe ejecutivo de benchmark
+
+Size 500: Paillier mean=142.937ms, ElGamal mean=30.093ms, Speedup(ElGamal/Paillier)=0.211
+Size 5000: Paillier mean=1442.982ms, ElGamal mean=61.531ms, Speedup(ElGamal/Paillier)=0.043
+Size 50000: Paillier mean=15083.335ms, ElGamal mean=207.418ms, Speedup(ElGamal/Paillier)=0.014
+Size 500000: Paillier mean=185885.362ms, ElGamal mean=1752.879ms, Speedup(ElGamal/Paillier)=0.009
